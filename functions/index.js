@@ -2,6 +2,8 @@ const functions = require('firebase-functions');
 //const admin = require('firebase-admin');
 
 var admin = require("firebase-admin");
+const app = require('express')();
+admin.initializeApp();
 
 //var serviceAccount = require("path/to/serviceAccountKey.json");
 
@@ -21,14 +23,26 @@ let defaultAppConfig = {
     }),
     databaseURL: 'https://socialapp-2e25e.firebaseio.com/'
 }
- 
-  admin.initializeApp(defaultAppConfig);
-  const express = require('express');
-  const app = express();
+
+  const config = {
+    apiKey: "AIzaSyAySVV2P_A4ACZkJdbsxMMx-vTtiYkIgAY",
+    authDomain: "socialapp-2e25e.firebaseapp.com",
+    databaseURL: "https://socialapp-2e25e.firebaseio.com",
+    projectId: "socialapp-2e25e",
+    storageBucket: "socialapp-2e25e.appspot.com",
+    messagingSenderId: "387325985079",
+    appId: "1:387325985079:web:d4598f22851ebd1b3edab2",
+    measurementId: "G-H90077G5KV"
+  };
+  const firebase =  require('firebase');
+  firebase.initializeApp(config);
 
 
 app.get('/screams', (req, res) =>{
-    admin.firestore().collection('screams').orderBy('createdAt', 'desc').get()
+    admin.firestore()
+    .collection('screams')
+    .orderBy('createdAt', 'desc')
+    .get()
     .then(data => {
         let screams = [];
         data.forEach(doc => {
@@ -36,7 +50,9 @@ app.get('/screams', (req, res) =>{
                 screamId: doc.id,
                 body: doc.data().body,
                 userHandle: doc.data().userhandle,
-                createdAt: doc.data().createdAt
+                createdAt: doc.data().createdAt,
+                commentCount: doc.data().commentCount,
+                likeCount: doc.data().likeCount
             });
         })
         return res.json(screams);
@@ -61,7 +77,26 @@ app.post('/scream', (req, res) => {
         });
 });
 
-// https://baseurl.com/api/
+//signup route
+app.post('/signup', (req, res) => {
+    const newUser = {
+        email: req.body.email,
+        password: req.body.password,
+        confirmPassword: req.body.confirmPassword,
+        handle: req.body.handle,
+    };
+
+    // TODO: validate data
+
+    firebase.auth().createUserWithEmailAndPassword(newUser.email, newUser.password)
+    .then (data => {
+        return res.status(201).json({message: `user ${data.user.uid} signed up successfully`});
+    })
+    .catch(err => {
+        console.error(err);
+        return res.status(500).json({error: err.code });
+    });
+});
 
 exports.api = functions.https.onRequest(app);
 
