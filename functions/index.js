@@ -27,41 +27,41 @@ let defaultAppConfig = {
   const app = express();
 
 
-exports.getScreams = functions.https.onRequest((req, res) =>{
-    admin.firestore().collection('screams').get()
+app.get('/screams', (req, res) =>{
+    admin.firestore().collection('screams').orderBy('createdAt', 'desc').get()
     .then(data => {
         let screams = [];
         data.forEach(doc => {
-            screams.push(doc.data());
+            screams.push({
+                screamId: doc.id,
+                body: doc.data().body,
+                userHandle: doc.data().userhandle,
+                createdAt: doc.data().createdAt
+            });
         })
         return res.json(screams);
     })
     .catch(err => console.error(err));
-});
+})
 
 
-exports.createScream = functions.https.onRequest((req, res) => {
-    if(req.method!=='POST')
-    { 
-        res.status(800).json({error: 'something went wrong'});
-        console.error(err);
-    
-    }
+app.post('/scream', (req, res) => {
     const newScream  = {
         body: req.body.body,
-        userhandle: req.body.userHandle,
-        createdAt: admin.firestore.Timestamp.fromDate(new Date())
+        userHandle: req.body.userHandle,
+        createdAt: new Date().toISOString()
     };
     admin.firestore()
-        .collection('screams')
-        .add(newScream)
-        .then(doc => {
+        .collection('screams').add(newScream).then((doc) => {
             res.json({ message: `document ${doc.id} created successfully`});
         })
         .catch(err => {
             res.status(500).json({error: 'something went wrong'});
             console.error(err);
         });
-   
 });
+
+// https://baseurl.com/api/
+
+exports.api = functions.https.onRequest(app);
 
