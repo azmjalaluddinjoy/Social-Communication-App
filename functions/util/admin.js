@@ -12,9 +12,12 @@ let defaultAppConfig = {
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
         "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/socialapp-2e25e%40appspot.gserviceaccount.com"
     }),
-    databaseURL: 'https://socialapp-2e25e.firebaseio.com/'
+    databaseURL: 'https://socialapp-2e25e.firebaseio.com/',
+    storageBucket:"socialapp-2e25e.appspot.com"
 }
 admin.initializeApp(defaultAppConfig);
+
+ 
 
 const db = admin.firestore();
 
