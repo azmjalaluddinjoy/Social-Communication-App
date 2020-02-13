@@ -64,6 +64,7 @@ app.get('/screams', (req, res) =>{
 })
 
 
+// data insertion after login with token
 app.post('/scream', (req, res) => {
     const newScream  = {
         body: req.body.body,
