@@ -4,8 +4,9 @@ const config = require('../util/config');
 const firebase = require('firebase');
 firebase.initializeApp(config);
 
-const { validateSignupData, validateLoginData } = require ('../util/validators');
+const { validateSignupData, validateLoginData, reduceUserDetails} = require ('../util/validators');
 
+// sign user up
 exports.signup = (req, res) => {
     const newUser = {
       email: req.body.email,
@@ -62,7 +63,7 @@ exports.signup = (req, res) => {
         })
     }
 
-
+// Log user in
 exports.login = (req, res) => {
     const user = {
         email: req.body.email,
@@ -89,7 +90,22 @@ exports.login = (req, res) => {
     });
 }
 
-//image upload
+
+//add User Details
+exports.addUserDetails = (req, res) => {
+    let userDetails = reduceUserDetails(req.body);
+
+    db.doc(`/users/${req.user.handle}`).update(userDetails)
+    .then(() => {
+        return res.json({ message: 'Details added successfully'});
+    })
+    .catch(err => {
+        console.error(err);
+        return res.status(500).json({error: err.code});
+    });
+};
+
+//uploading a profile image
 exports.uploadImage = (req, res) => {
     const BusBoy = require('busboy');
     const path = require('path');
@@ -102,9 +118,7 @@ exports.uploadImage = (req, res) => {
     let imageToBeUploaded = {};
 
     busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-        console.log(fieldname);
-        console.log(filename);
-        console.log(mimetype);
+        console.log(fieldname, file, filename, encoding, mimetype);
         if(mimetype !== 'image/jpeg' && mimetype !== 'image/png'){
             return res.status(400).json({ error: 'Wrong file type submitted' });
         }
