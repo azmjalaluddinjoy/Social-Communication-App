@@ -21,4 +21,28 @@ users: [
             commentCount: 2
         }
     ]
+};
+
+const userDetails = {
+    //redux code
+    credentials: {
+        userId: '435434',
+        email: 'user@gmail.com',
+        handle: 'user',
+        createdAt: '344f',
+        imageUrl: 'image/sdf/sdfsd',
+        bio: 'Hello, my name is user',
+        website: 'https://user.com',
+        location: 'Dhaka, Bangladesh'
+    },
+    likes: [
+        {
+            userHandle: 'user',
+            screamId: 'wrefidseu'
+        },
+        {
+            userHandle: 'user',
+            screamId: '4r34r489ff4389'
+        }
+    ]
 }
