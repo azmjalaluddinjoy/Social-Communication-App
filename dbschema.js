@@ -25,10 +25,21 @@ comments = [
     {
         userHandle: 'user',
         screamId: 'P1Zz0mz3Gxsf4oPb6R66',
-        body: 'nice to meet you bro !',
+        body: 'nice to meet you bro !', 
         createdAt: '2020-02-17T06:51:02.211Z'
     }
 ],
+notifications: [
+    {
+        recipient: 'user',
+        sender: 'john',
+        read: 'true | false',
+        screamId: 'o484rfjjf',
+        type: 'like | comment',
+        createdAt: '2020-02-17T06:51:02.211Z'
+    }
+],
+
 };
 
 
