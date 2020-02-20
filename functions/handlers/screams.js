@@ -1,8 +1,15 @@
 const { db } = require('../util/admin');
+ 
+
+// const {
+//   onScreamDelete 
+// } = require('../index');
+
+
+
+
 
 exports.getAllScreams = (req, res) =>{
-    
-    
     db
     .collection('screams')
     .orderBy('createdAt', 'desc')
@@ -16,7 +23,8 @@ exports.getAllScreams = (req, res) =>{
                 userHandle: doc.data().userhandle,
                 createdAt: doc.data().createdAt,
                 commentCount: doc.data().commentCount,
-                likeCount: doc.data().likeCount
+                likeCount: doc.data().likeCount,
+                userImage: doc.data().userImage
             });
         })
         return res.json(screams);
@@ -151,8 +159,9 @@ exports.likeScream = (req, res) => {
             .then(() => {
               screamData.likeCount++;
               return screamDocument.update({ likeCount: screamData.likeCount });
-            })
+            }) 
             .then(() => {
+             
               return res.json(screamData);
             });
         } else {
